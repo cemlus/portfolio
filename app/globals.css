@@ -1,0 +1,854 @@
+:root {
+  --font-serif: 'Newsreader';
+  --font-mono: 'IBM Plex Mono';
+  --paper: #f4f6f3;
+  --sheet: rgba(255, 255, 255, 0.5);
+  --ruled: #dfe6e1;
+  --ink: #18211d;
+  --body: #2e3a34;
+  --pencil: #7b857e;
+  --margin: #b9503f;
+  --pen: #2a5490;
+  --green: #2c6e49;
+  --plot-warm: rgba(185, 80, 63, 0.1);
+  --plot-cool: rgba(44, 110, 73, 0.1);
+  --line-warm: #b9503f;
+  --line-cool: #2c6e49;
+  --polaroid: #fbfaf6;
+  --polaroid-edge: rgba(24, 33, 29, 0.13);
+  /* The frame is near-white in BOTH themes, so its ink must not follow --pen
+     into the light blue of the dark palette. Deliberately never overridden. */
+  --polaroid-ink: #2a5490;
+  --tape: rgba(185, 80, 63, 0.14);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --paper: #14181a;
+  --sheet: rgba(255, 255, 255, 0.022);
+  --ruled: #222a2b;
+  --ink: #dde5e0;
+  --body: #b3bfb9;
+  --pencil: #7d8a85;
+  --margin: #e0785f;
+  --pen: #85aede;
+  --green: #63bd8e;
+  --plot-warm: rgba(224, 120, 95, 0.13);
+  --plot-cool: rgba(99, 189, 142, 0.13);
+  --line-warm: #e0785f;
+  --line-cool: #63bd8e;
+  --polaroid: #e9e6df;
+  --polaroid-edge: rgba(0, 0, 0, 0.4);
+  --tape: rgba(224, 120, 95, 0.22);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 30px,
+    var(--ruled) 30px 31px
+  );
+  color: var(--body);
+  font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+  font-size: 17.5px;
+  line-height: 31px;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+a {
+  color: var(--pen);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--pen) 32%, transparent);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+a:hover {
+  border-bottom-color: var(--pen);
+}
+a:focus-visible {
+  outline: 2px solid var(--pen);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--pen);
+  outline-offset: 2px;
+}
+
+.sheet {
+  max-width: 60rem;
+  margin: 0 auto;
+  background: var(--sheet);
+  border-left: 1px solid var(--ruled);
+  border-right: 1px solid var(--ruled);
+  padding: 0 clamp(1rem, 4vw, 3rem) 5rem;
+  transition: background-color 0.25s ease;
+}
+
+.g2 {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0 2.2rem;
+}
+
+/* ---------- scroll reveal ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s cubic-bezier(0.22, 0.7, 0.3, 1),
+    transform 0.5s cubic-bezier(0.22, 0.7, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---------- head ---------- */
+
+.head {
+  padding: 3.7rem 0 1.86rem;
+  border-bottom: 2px solid var(--margin);
+}
+.head .l {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 2.05;
+  letter-spacing: 0.05em;
+  color: var(--pencil);
+  text-transform: uppercase;
+}
+.head .l a {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+.head h1 {
+  font-weight: 500;
+  font-size: 2.15rem;
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.head .say {
+  max-width: 32rem;
+  margin-top: 0.6rem;
+}
+.head .say em {
+  color: var(--margin);
+  font-style: italic;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.4rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pencil);
+}
+.topbar nav {
+  display: flex;
+  gap: 1.2rem;
+}
+.topbar nav a {
+  color: var(--pencil);
+  border-bottom: 1px dashed var(--ruled);
+}
+.topbar nav a:hover,
+.topbar nav a[data-active='true'] {
+  color: var(--margin);
+  border-bottom-color: var(--margin);
+}
+
+/* theme toggle, styled as a margin note */
+.toggle {
+  background: none;
+  border: none;
+  border-bottom: 1px dashed var(--ruled);
+  color: var(--pencil);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.1rem 0;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.toggle:hover {
+  color: var(--margin);
+  border-bottom-color: var(--margin);
+}
+
+/* ---------- index search ---------- */
+
+.find {
+  padding: 1.55rem 0;
+  border-bottom: 1px solid var(--ruled);
+}
+.find .l {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--margin);
+  line-height: 1.9;
+  padding-top: 0.35rem;
+}
+.find .l span {
+  display: block;
+  color: var(--pen);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  margin-top: 0.3rem;
+}
+.ln {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 0.35rem;
+}
+.ln .car {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 15px;
+  color: var(--margin);
+  line-height: 1;
+}
+.ln input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 15px;
+  color: var(--ink);
+  padding: 0.2rem 0;
+}
+.ln input::placeholder {
+  color: var(--pencil);
+  opacity: 0.75;
+}
+.ln .k {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--pencil);
+  border: 1px solid var(--ruled);
+  border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+  white-space: nowrap;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.15rem;
+  margin-top: 0.7rem;
+}
+.chips button {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--pencil);
+  background: none;
+  border: none;
+  border-bottom: 1px dashed var(--ruled);
+  padding: 0.1rem 0;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.chips button:hover,
+.chips button[data-on='true'] {
+  color: var(--margin);
+  border-bottom-color: var(--margin);
+}
+
+/* ---------- entries ---------- */
+
+.entry {
+  padding: 2.48rem 0;
+  border-bottom: 1px solid var(--ruled);
+  scroll-margin-top: 2rem;
+}
+.gutter {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.95;
+  letter-spacing: 0.04em;
+  color: var(--pencil);
+}
+.gutter b {
+  display: block;
+  color: var(--margin);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.gutter .an {
+  display: block;
+  color: var(--pen);
+  margin-top: 1.24rem;
+  line-height: 1.75;
+}
+.main {
+  min-width: 0;
+  max-width: 38rem;
+}
+.main h2 {
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 1.24;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.verdict {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--green);
+  margin-top: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.verdict s {
+  color: var(--pencil);
+  text-decoration-color: var(--margin);
+}
+.main p {
+  margin-top: 0.9rem;
+}
+
+.tries {
+  margin: 1.3rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.85;
+}
+.tries li {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr;
+  gap: 0.6rem;
+  margin-bottom: 0.55rem;
+}
+.tries li:last-child {
+  margin-bottom: 0;
+}
+.tries .m {
+  color: var(--margin);
+}
+.tries .m.ok {
+  color: var(--green);
+}
+.tries s {
+  color: var(--pencil);
+  text-decoration-color: var(--margin);
+  text-decoration-thickness: 1px;
+}
+.tries i {
+  font-style: normal;
+  color: var(--body);
+}
+.tries b {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ---------- plot ---------- */
+
+.plotwrap {
+  margin-top: 1.4rem;
+  border-top: 1px solid var(--ink);
+  padding-top: 0.75rem;
+}
+.plothead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--pencil);
+  letter-spacing: 0.04em;
+}
+.plothead .sw {
+  margin-left: auto;
+  display: flex;
+  gap: 0.9rem;
+}
+.plothead .sw button {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  background: none;
+  border: none;
+  padding: 0.1rem 0;
+  cursor: pointer;
+  color: var(--pencil);
+  border-bottom: 1.5px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.plothead .sw button[aria-pressed='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--margin);
+}
+svg.plot {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.5rem;
+}
+.plot .ax {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  fill: var(--pencil);
+}
+.plot .gl {
+  stroke: var(--ruled);
+  stroke-width: 1;
+}
+.plotnote {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--pencil);
+  margin-top: 0.4rem;
+  padding-bottom: 0.5rem;
+}
+.method {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  line-height: 1.75;
+  color: var(--pencil);
+  border-top: 1px dotted var(--ruled);
+  border-bottom: 1px solid var(--ink);
+  padding: 0.5rem 0;
+}
+
+/* ---------- measurements, links, stack ---------- */
+
+.meas {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 0.85rem 0;
+  margin-top: 1.3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 1rem;
+}
+.meas .k {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pencil);
+  line-height: 1.6;
+}
+.meas .v {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.12rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.meas .s {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  color: var(--pencil);
+  line-height: 1.5;
+}
+
+.proof {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 2;
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 1.2rem;
+}
+.proof span {
+  color: var(--pencil);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.stack {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--pencil);
+  line-height: 1.95;
+  margin-top: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- record table ---------- */
+
+.log {
+  width: 100%;
+  border-collapse: collapse;
+}
+.log td {
+  padding: 0.55rem 0;
+  border-bottom: 1px dotted var(--ruled);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.log tr:last-child td {
+  border-bottom: none;
+}
+.log .d {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--pencil);
+  white-space: nowrap;
+  padding-right: 1.4rem;
+  width: 1%;
+}
+.log b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.log span {
+  display: block;
+  font-size: 15.5px;
+}
+
+/* ---------- empty state, close ---------- */
+
+.nores {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 2;
+  color: var(--pencil);
+  padding: 2.4rem 0;
+  border-bottom: 1px solid var(--ruled);
+}
+.nores b {
+  color: var(--margin);
+  font-weight: 500;
+}
+.close {
+  padding: 2.48rem 0 0;
+  border-top: 2px solid var(--margin);
+}
+
+/* ---------- blog ---------- */
+
+.postlist {
+  padding: 2.48rem 0;
+  border-bottom: 1px solid var(--ruled);
+}
+.postlist h2 {
+  font-weight: 500;
+  font-size: 1.42rem;
+  line-height: 1.26;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.postlist h2 a {
+  color: var(--ink);
+  border-bottom: 1px solid transparent;
+}
+.postlist h2 a:hover {
+  border-bottom-color: var(--margin);
+}
+.postlist p {
+  margin-top: 0.5rem;
+}
+
+.prose {
+  max-width: 38rem;
+}
+.prose h2 {
+  font-weight: 500;
+  font-size: 1.34rem;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-top: 1.86rem;
+}
+.prose h3 {
+  font-weight: 500;
+  font-size: 1.12rem;
+  color: var(--ink);
+  margin-top: 1.55rem;
+}
+.prose p {
+  margin-top: 0.93rem;
+}
+.prose ul,
+.prose ol {
+  margin: 0.93rem 0 0 1.2rem;
+}
+.prose li {
+  margin-bottom: 0.3rem;
+}
+.prose code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.82em;
+  background: color-mix(in srgb, var(--ruled) 60%, transparent);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  color: var(--ink);
+}
+.prose pre {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.8;
+  background: color-mix(in srgb, var(--ruled) 45%, transparent);
+  border-left: 2px solid var(--margin);
+  padding: 0.9rem 1rem;
+  margin-top: 1.24rem;
+  overflow-x: auto;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+.prose blockquote {
+  border-left: 2px solid var(--ruled);
+  padding-left: 1.1rem;
+  margin-top: 1.24rem;
+  color: var(--pencil);
+  font-style: italic;
+}
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--ruled);
+  margin: 1.86rem 0;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 760px) {
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  /* the gutter becomes a meta strip, and the annotation keeps its marginal
+     character with a rule instead of a column */
+  .gutter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+    align-items: baseline;
+  }
+  .gutter b {
+    margin-bottom: 0;
+  }
+  .gutter .an {
+    flex-basis: 100%;
+    margin-top: 0.5rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid var(--pen);
+  }
+  .head .l {
+    line-height: 1.9;
+  }
+  .head h1 {
+    font-size: 1.85rem;
+  }
+  .find .l span {
+    display: inline;
+    margin-left: 0.6rem;
+  }
+}
+
+/* ---------- polaroids ---------- */
+
+/* The block adds 31 + 217 + 31 = 279px, an exact 9 × 31, so everything below it
+   keeps the relationship to the ruled lines it had before the photos arrived.
+   Margins collapse with the siblings above and below, which is why they are a
+   flat 31px rather than the rem values used elsewhere. */
+.tape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 31px 2.1rem;
+  margin: 31px 0;
+}
+
+.pol {
+  position: relative;
+  flex: 0 0 auto;
+  display: block;
+  width: 240px;
+  height: 217px; /* 12 top pad + 162 photo + 43 caption band */
+  padding: 12px 12px 0;
+  background: var(--polaroid);
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 1px 2px var(--polaroid-edge), 0 7px 18px rgba(24, 33, 29, 0.11);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Deterministic angles. Math.random() here would differ between the server and
+   client renders and desync hydration. */
+.pol:nth-child(odd) {
+  transform: rotate(-1.8deg);
+}
+.pol:nth-child(even) {
+  transform: rotate(1.4deg);
+}
+.pol:nth-child(3n) {
+  transform: rotate(-0.7deg);
+}
+.pol:hover,
+.pol:focus-visible {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 2px 3px var(--polaroid-edge), 0 14px 30px rgba(24, 33, 29, 0.17);
+}
+.pol:focus-visible {
+  outline: 2px solid var(--pen);
+  outline-offset: 3px;
+}
+
+/* the tape */
+.pol::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 84px;
+  height: 25px;
+  transform: translateX(-50%) rotate(-3.5deg);
+  background: var(--tape);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+/* cover, not contain: screenshots arrive at any dimension, and the frame has to
+   stay a fixed height or the ruled rhythm breaks. The dialog shows the whole
+   image; Shot.focus moves the crop when the centre is the wrong place. */
+.pol .pic {
+  display: block;
+  width: 216px;
+  height: 162px;
+  overflow: hidden;
+  background: var(--ruled);
+}
+.pol .pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+[data-theme='dark'] .pol .pic img {
+  filter: brightness(0.88);
+}
+
+.pol .cap {
+  /* Clamped rather than centred: a long caption must not spill out of a frame
+     whose height is load-bearing for the ruled rhythm. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  height: 43px;
+  padding-top: 9px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--polaroid-ink);
+}
+
+/* ---------- lightbox ---------- */
+
+dialog.lb {
+  /* The `* { margin: 0 }` reset at the top of this file beats the UA stylesheet's
+     `dialog { margin: auto }`, which is what centres a modal. Put it back. */
+  margin: auto;
+  max-width: min(92vw, 1100px);
+  max-height: 92vh;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
+}
+dialog.lb::backdrop {
+  background: rgba(10, 14, 12, 0.74);
+}
+dialog.lb figure {
+  margin: 0;
+  padding: 14px;
+  background: var(--polaroid);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+dialog.lb img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(92vh - 96px);
+  object-fit: contain;
+}
+dialog.lb figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-top: 10px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--polaroid-ink);
+}
+dialog.lb figcaption button {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  border-bottom: 1px dashed currentColor;
+  padding: 0.1rem 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--polaroid-ink);
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .tape {
+    /* The row gap stays 31px even here: stacked polaroids add 217 + 31 = 248,
+       another exact multiple, so wrapping never knocks the page off the rules. */
+    gap: 31px 1.4rem;
+  }
+}
