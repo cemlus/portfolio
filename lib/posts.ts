@@ -14,7 +14,9 @@ export type Post = {
   summary: string;
 };
 
-export type FullPost = Post & { html: string };
+export type Heading = { id: string; text: string };
+
+export type FullPost = Post & { html: string; headings: Heading[] };
 
 function parse(file: string): Post & { body: string } {
   const raw = fs.readFileSync(path.join(DIR, file), 'utf8');
@@ -55,7 +57,32 @@ export async function getPost(slug: string): Promise<FullPost | null> {
   const file = `${slug}.md`;
   if (!fs.existsSync(path.join(DIR, file))) return null;
   const { body, ...post } = parse(file);
-  return { ...post, html: await marked.parse(body) };
+  const { headings, html } = withHeadingIds(body, await marked.parse(body));
+  return { ...post, html, headings };
+}
+
+const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+/**
+ * Pull the `## ` headings out of the source and stamp the matching ids onto the
+ * rendered HTML, so the post page can put a section list in the margin and have
+ * it link somewhere.
+ */
+function withHeadingIds(markdown: string, html: string) {
+  const headings: Heading[] = [];
+  for (const line of markdown.split('\n')) {
+    const m = /^##\s+(.+?)\s*$/.exec(line);
+    if (m) headings.push({ id: slugify(m[1]), text: m[1] });
+  }
+  let i = 0;
+  const linked = html.replace(/<h2>/g, () =>
+    i < headings.length ? `<h2 id="${headings[i++].id}">` : '<h2>'
+  );
+  return { headings, html: linked };
 }
 
 /** 2026-06-14 → 14 Jun 2026 */

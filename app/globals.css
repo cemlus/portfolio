@@ -60,6 +60,10 @@ body {
     transparent 0 30px,
     var(--ruled) 30px 31px
   );
+  /* Measured: a serif baseline sits 19px below its block's top, and every block
+     now starts on a multiple of 15.5px. Sliding the rules by 20px puts them
+     directly under the baseline instead of through the x-height. */
+  background-position: 0 20px;
   color: var(--body);
   font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
   font-size: 17.5px;
@@ -99,7 +103,7 @@ input:focus-visible {
   background: var(--sheet);
   border-left: 1px solid var(--ruled);
   border-right: 1px solid var(--ruled);
-  padding: 0 clamp(1rem, 4vw, 3rem) 5rem;
+  padding: 0 clamp(1rem, 4vw, 3rem) 77.5px;
   transition: background-color 0.25s ease;
 }
 
@@ -141,13 +145,13 @@ input:focus-visible {
 /* ---------- head ---------- */
 
 .head {
-  padding: 3.7rem 0 1.86rem;
+  padding: 62px 0 29px;
   border-bottom: 2px solid var(--margin);
 }
 .head .l {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
-  line-height: 2.05;
+  line-height: 15.5px;
   letter-spacing: 0.05em;
   color: var(--pencil);
   text-transform: uppercase;
@@ -157,15 +161,19 @@ input:focus-visible {
   letter-spacing: 0.02em;
 }
 .head h1 {
+  /* stops "first." stranding on a line of its own */
+  text-wrap: balance;
   font-weight: 500;
   font-size: 2.15rem;
-  line-height: 1.16;
+  line-height: 38.75px;
   letter-spacing: -0.015em;
   color: var(--ink);
 }
 .head .say {
+  /* keeps the italic clause from splitting across the break */
+  text-wrap: pretty;
   max-width: 32rem;
-  margin-top: 0.6rem;
+  margin-top: 15.5px;
 }
 .head .say em {
   color: var(--margin);
@@ -177,12 +185,14 @@ input:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-top: 1.4rem;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--pencil);
+  line-height: 15.5px;
+  height: 62px;
+  padding: 0;
 }
 .topbar nav {
   display: flex;
@@ -191,6 +201,7 @@ input:focus-visible {
 .topbar nav a {
   color: var(--pencil);
   border-bottom: 1px dashed var(--ruled);
+  padding: 0;
 }
 .topbar nav a:hover,
 .topbar nav a[data-active='true'] {
@@ -209,8 +220,9 @@ input:focus-visible {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 0.1rem 0;
+  padding: 0;
   transition: color 0.15s ease, border-color 0.15s ease;
+  line-height: 15.5px;
 }
 .toggle:hover {
   color: var(--margin);
@@ -220,7 +232,7 @@ input:focus-visible {
 /* ---------- index search ---------- */
 
 .find {
-  padding: 1.55rem 0;
+  padding: 31px 0 30px;
   border-bottom: 1px solid var(--ruled);
 }
 .find .l {
@@ -229,22 +241,23 @@ input:focus-visible {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--margin);
-  line-height: 1.9;
-  padding-top: 0.35rem;
+  line-height: 15.5px;
+  padding-top: 0;
 }
 .find .l span {
   display: block;
   color: var(--pen);
   text-transform: none;
   letter-spacing: 0.02em;
-  margin-top: 0.3rem;
+  margin-top: 0;
 }
 .ln {
   display: flex;
   align-items: baseline;
   gap: 0.7rem;
   border-bottom: 1.5px solid var(--ink);
-  padding-bottom: 0.35rem;
+  padding-bottom: 0;
+  height: 31px;
 }
 .ln .car {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -261,7 +274,8 @@ input:focus-visible {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 15px;
   color: var(--ink);
-  padding: 0.2rem 0;
+  padding: 7.75px 0;
+  line-height: 15.5px;
 }
 .ln input::placeholder {
   color: var(--pencil);
@@ -273,14 +287,17 @@ input:focus-visible {
   color: var(--pencil);
   border: 1px solid var(--ruled);
   border-radius: 3px;
-  padding: 0.1rem 0.35rem;
+  padding: 0 0.35rem;
   white-space: nowrap;
+  line-height: 15.5px;
 }
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.15rem 1.15rem;
-  margin-top: 0.7rem;
+  gap: 0 1.15rem;
+  margin-top: 15.5px;
+  height: 15.5px;
+  align-items: center;
 }
 .chips button {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -289,9 +306,10 @@ input:focus-visible {
   background: none;
   border: none;
   border-bottom: 1px dashed var(--ruled);
-  padding: 0.1rem 0;
+  padding: 0;
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
+  line-height: 15.5px;
 }
 .chips button:hover,
 .chips button[data-on='true'] {
@@ -302,14 +320,14 @@ input:focus-visible {
 /* ---------- entries ---------- */
 
 .entry {
-  padding: 2.48rem 0;
+  padding: 31px 0 30px;
   border-bottom: 1px solid var(--ruled);
-  scroll-margin-top: 2rem;
+  scroll-margin-top: 31px;
 }
 .gutter {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
-  line-height: 1.95;
+  line-height: 15.5px;
   letter-spacing: 0.04em;
   color: var(--pencil);
 }
@@ -319,31 +337,32 @@ input:focus-visible {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0;
 }
 .gutter .an {
   display: block;
   color: var(--pen);
-  margin-top: 1.24rem;
-  line-height: 1.75;
+  margin-top: 15.5px;
+  line-height: 15.5px;
 }
 .main {
   min-width: 0;
   max-width: 38rem;
 }
 .main h2 {
+  text-wrap: balance;
   font-weight: 500;
   font-size: 1.5rem;
-  line-height: 1.24;
+  line-height: 31px;
   color: var(--ink);
   letter-spacing: -0.01em;
 }
 .verdict {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12.5px;
-  line-height: 1.75;
+  line-height: 15.5px;
   color: var(--green);
-  margin-top: 0.5rem;
+  margin-top: 15.5px;
   letter-spacing: 0.01em;
 }
 .verdict s {
@@ -351,22 +370,22 @@ input:focus-visible {
   text-decoration-color: var(--margin);
 }
 .main p {
-  margin-top: 0.9rem;
+  margin-top: 15.5px;
 }
 
 .tries {
-  margin: 1.3rem 0 0;
+  margin: 15.5px 0 0;
   padding: 0;
   list-style: none;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 13px;
-  line-height: 1.85;
+  line-height: 15.5px;
 }
 .tries li {
   display: grid;
   grid-template-columns: 1.4rem 1fr;
   gap: 0.6rem;
-  margin-bottom: 0.55rem;
+  margin-bottom: 15.5px;
 }
 .tries li:last-child {
   margin-bottom: 0;
@@ -394,12 +413,15 @@ input:focus-visible {
 /* ---------- plot ---------- */
 
 .plotwrap {
-  margin-top: 1.4rem;
+  margin-top: 15.5px;
   border-top: 1px solid var(--ink);
-  padding-top: 0.75rem;
+  padding-top: 14.5px;
 }
 .plothead {
   display: flex;
+  /* baseline-aligning an 11px label against 11.5px buttons yields a 19.19px row,
+     which is the one thing in this block that isn't on the grid. Pin it. */
+  height: 31px;
   align-items: baseline;
   gap: 0.9rem;
   flex-wrap: wrap;
@@ -407,6 +429,7 @@ input:focus-visible {
   font-size: 11px;
   color: var(--pencil);
   letter-spacing: 0.04em;
+  line-height: 15.5px;
 }
 .plothead .sw {
   margin-left: auto;
@@ -431,8 +454,8 @@ input:focus-visible {
 svg.plot {
   display: block;
   width: 100%;
-  height: auto;
-  margin-top: 0.5rem;
+  height: 186px;
+  margin-top: 15.5px;
 }
 .plot .ax {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -446,19 +469,19 @@ svg.plot {
 .plotnote {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11.5px;
-  line-height: 1.8;
+  line-height: 15.5px;
   color: var(--pencil);
-  margin-top: 0.4rem;
-  padding-bottom: 0.5rem;
+  margin-top: 0;
+  padding-bottom: 15.5px;
 }
 .method {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10.5px;
-  line-height: 1.75;
+  line-height: 15.5px;
   color: var(--pencil);
   border-top: 1px dotted var(--ruled);
   border-bottom: 1px solid var(--ink);
-  padding: 0.5rem 0;
+  padding: 6.75px 0;
 }
 
 /* ---------- measurements, links, stack ---------- */
@@ -466,8 +489,8 @@ svg.plot {
 .meas {
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
-  padding: 0.85rem 0;
-  margin-top: 1.3rem;
+  padding: 14.5px 0;
+  margin-top: 15.5px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
   gap: 1rem;
@@ -478,30 +501,31 @@ svg.plot {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--pencil);
-  line-height: 1.6;
+  line-height: 15.5px;
 }
 .meas .v {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 1.12rem;
   font-weight: 500;
   color: var(--ink);
-  line-height: 1.4;
+  line-height: 15.5px;
 }
 .meas .s {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10.5px;
   color: var(--pencil);
-  line-height: 1.5;
+  line-height: 15.5px;
 }
 
 .proof {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11.5px;
-  line-height: 2;
-  margin-top: 1rem;
+  line-height: 15.5px;
+  margin-top: 14.5px;
   display: flex;
   flex-wrap: wrap;
   gap: 0.1rem 1.2rem;
+  align-items: baseline;
 }
 .proof span {
   color: var(--pencil);
@@ -510,12 +534,18 @@ svg.plot {
   font-size: 10px;
 }
 
+/* .proof's links are flex items, so each one's 1px underline adds a pixel to the
+   row. Take it back off the next block rather than let it drift the whole page. */
+.proof + .stack {
+  margin-top: 14.5px;
+}
+
 .stack {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11.5px;
   color: var(--pencil);
-  line-height: 1.95;
-  margin-top: 1.1rem;
+  line-height: 15.5px;
+  margin-top: 15.5px;
   letter-spacing: 0.02em;
 }
 
@@ -526,13 +556,17 @@ svg.plot {
   border-collapse: collapse;
 }
 .log td {
-  padding: 0.55rem 0;
+  padding: 7.75px 0;
   border-bottom: 1px dotted var(--ruled);
   vertical-align: top;
-  line-height: 1.5;
+  line-height: 15.5px;
 }
 .log tr:last-child td {
   border-bottom: none;
+}
+/* same trick: absorb the 1px dotted row rule into the cell's padding */
+.log tr:not(:last-child) td {
+  padding-bottom: 6.75px;
 }
 .log .d {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -556,9 +590,9 @@ svg.plot {
 .nores {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 13px;
-  line-height: 2;
+  line-height: 15.5px;
   color: var(--pencil);
-  padding: 2.4rem 0;
+  padding: 46.5px 0;
   border-bottom: 1px solid var(--ruled);
 }
 .nores b {
@@ -566,20 +600,21 @@ svg.plot {
   font-weight: 500;
 }
 .close {
-  padding: 2.48rem 0 0;
+  padding: 44.5px 0 0;
   border-top: 2px solid var(--margin);
 }
 
 /* ---------- blog ---------- */
 
 .postlist {
-  padding: 2.48rem 0;
+  padding: 31px 0 30px;
   border-bottom: 1px solid var(--ruled);
 }
 .postlist h2 {
+  text-wrap: balance;
   font-weight: 500;
   font-size: 1.42rem;
-  line-height: 1.26;
+  line-height: 31px;
   color: var(--ink);
   letter-spacing: -0.01em;
 }
@@ -591,34 +626,37 @@ svg.plot {
   border-bottom-color: var(--margin);
 }
 .postlist p {
-  margin-top: 0.5rem;
+  margin-top: 15.5px;
 }
 
 .prose {
   max-width: 38rem;
 }
 .prose h2 {
+  text-wrap: balance;
   font-weight: 500;
   font-size: 1.34rem;
-  line-height: 1.3;
+  line-height: 31px;
   color: var(--ink);
-  margin-top: 1.86rem;
+  margin-top: 31px;
 }
 .prose h3 {
+  text-wrap: balance;
   font-weight: 500;
   font-size: 1.12rem;
   color: var(--ink);
-  margin-top: 1.55rem;
+  margin-top: 31px;
 }
 .prose p {
-  margin-top: 0.93rem;
+  text-wrap: pretty;
+  margin-top: 15.5px;
 }
 .prose ul,
 .prose ol {
-  margin: 0.93rem 0 0 1.2rem;
+  margin: 15.5px 0 0 1.2rem;
 }
 .prose li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0;
 }
 .prose code {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -631,11 +669,11 @@ svg.plot {
 .prose pre {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12.5px;
-  line-height: 1.8;
+  line-height: 15.5px;
   background: color-mix(in srgb, var(--ruled) 45%, transparent);
   border-left: 2px solid var(--margin);
-  padding: 0.9rem 1rem;
-  margin-top: 1.24rem;
+  padding: 15.5px 1rem;
+  margin-top: 31px;
   overflow-x: auto;
 }
 .prose pre code {
@@ -646,14 +684,14 @@ svg.plot {
 .prose blockquote {
   border-left: 2px solid var(--ruled);
   padding-left: 1.1rem;
-  margin-top: 1.24rem;
+  margin-top: 31px;
   color: var(--pencil);
   font-style: italic;
 }
 .prose hr {
   border: none;
   border-top: 1px solid var(--ruled);
-  margin: 1.86rem 0;
+  margin: 31px 0;
 }
 
 /* ---------- responsive ---------- */
@@ -661,14 +699,14 @@ svg.plot {
 @media (max-width: 760px) {
   .g2 {
     grid-template-columns: 1fr;
-    gap: 0.9rem;
+    gap: 15.5px;
   }
   /* the gutter becomes a meta strip, and the annotation keeps its marginal
      character with a rule instead of a column */
   .gutter {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.2rem 1rem;
+    gap: 0 1rem;
     align-items: baseline;
   }
   .gutter b {
@@ -676,12 +714,12 @@ svg.plot {
   }
   .gutter .an {
     flex-basis: 100%;
-    margin-top: 0.5rem;
+    margin-top: 15.5px;
     padding-left: 0.8rem;
     border-left: 2px solid var(--pen);
   }
   .head .l {
-    line-height: 1.9;
+    line-height: 15.5px;
   }
   .head h1 {
     font-size: 1.85rem;
@@ -716,7 +754,12 @@ svg.plot {
   border: none;
   text-align: left;
   cursor: pointer;
-  box-shadow: 0 1px 2px var(--polaroid-edge), 0 7px 18px rgba(24, 33, 29, 0.11);
+  /* A contact shadow tight to the edge, then two softer layers. Without the
+     tight one the photo hovers instead of resting on the paper. */
+  box-shadow:
+    0 1px 1px rgba(24, 33, 29, 0.22),
+    0 3px 6px rgba(24, 33, 29, 0.1),
+    0 10px 22px rgba(24, 33, 29, 0.07);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
@@ -734,26 +777,51 @@ svg.plot {
 .pol:hover,
 .pol:focus-visible {
   transform: rotate(0deg) translateY(-4px);
-  box-shadow: 0 2px 3px var(--polaroid-edge), 0 14px 30px rgba(24, 33, 29, 0.17);
+  box-shadow:
+    0 2px 2px rgba(24, 33, 29, 0.2),
+    0 8px 14px rgba(24, 33, 29, 0.13),
+    0 22px 40px rgba(24, 33, 29, 0.12);
 }
 .pol:focus-visible {
   outline: 2px solid var(--pen);
   outline-offset: 3px;
 }
 
-/* the tape */
+/* the tape — torn ends, a little sheen, and a different angle on each photo so
+   it reads as applied by hand rather than drawn by a stylesheet */
 .pol::before {
   content: '';
   position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 84px;
-  height: 25px;
-  transform: translateX(-50%) rotate(-3.5deg);
-  background: var(--tape);
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  top: -9px;
+  width: 78px;
+  height: 23px;
+  background:
+    linear-gradient(
+      104deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.04) 38%,
+      rgba(255, 255, 255, 0.26) 72%,
+      rgba(255, 255, 255, 0.06) 100%
+    ),
+    var(--tape);
+  /* uneven edges: torn, not cut */
+  clip-path: polygon(4% 0%, 96% 3%, 100% 97%, 1% 100%);
+  box-shadow: 0 1px 2px rgba(24, 33, 29, 0.14);
   pointer-events: none;
+}
+.pol:nth-child(odd)::before {
+  left: 16%;
+  transform: rotate(-8deg);
+}
+.pol:nth-child(even)::before {
+  left: auto;
+  right: 12%;
+  transform: rotate(6.5deg);
+}
+.pol:nth-child(3n)::before {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) rotate(-2.5deg);
 }
 
 /* cover, not contain: screenshots arrive at any dimension, and the frame has to
@@ -850,5 +918,39 @@ dialog.lb figcaption button {
     /* The row gap stays 31px even here: stacked polaroids add 217 + 31 = 248,
        another exact multiple, so wrapping never knocks the page off the rules. */
     gap: 31px 1.4rem;
+  }
+}
+
+/* ---------- section list in the post margin ---------- */
+
+/* The gutter runs empty for the whole length of an article, which is the most
+   notebook-native space on the page. This puts the sections in it. */
+.marginalia {
+  display: flex;
+  flex-direction: column;
+  margin-top: 31px;
+  position: sticky;
+  top: 31px;
+}
+.marginalia a {
+  color: var(--pencil);
+  line-height: 15.5px;
+  padding: 7.75px 0;
+  border-bottom: none;
+  border-left: 1px solid var(--ruled);
+  padding-left: 0.7rem;
+  margin-left: -0.7rem;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.marginalia a:hover,
+.marginalia a:focus-visible {
+  color: var(--margin);
+  border-left-color: var(--margin);
+}
+
+@media (max-width: 760px) {
+  /* no margin to speak of once the columns collapse */
+  .marginalia {
+    display: none;
   }
 }

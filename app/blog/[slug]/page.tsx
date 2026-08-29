@@ -46,6 +46,15 @@ export default async function PostPage({ params }: Props) {
         <div className="gutter">
           <b>{post.tag}</b>
           {formatDate(post.date)}
+          {post.headings.length > 0 ? (
+            <nav className="marginalia" aria-label="Sections">
+              {post.headings.map((h) => (
+                <a key={h.id} href={`#${h.id}`}>
+                  {h.text}
+                </a>
+              ))}
+            </nav>
+          ) : null}
           <span className="an">
             <Link href="/blog">↳ back to writing</Link>
           </span>

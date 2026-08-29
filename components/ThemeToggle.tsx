@@ -27,7 +27,8 @@ export default function ThemeToggle() {
 
   return (
     <button type="button" className="toggle" onClick={toggle} aria-label="Switch colour theme">
-      <span suppressHydrationWarning>{theme === 'dark' ? 'light' : 'dark'}</span>
+      {/* the arrow makes it an action, not a statement of the current theme */}
+      <span suppressHydrationWarning>{theme === 'dark' ? '\u2192 light' : '\u2192 dark'}</span>
     </button>
   );
 }
