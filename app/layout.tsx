@@ -37,16 +37,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * Runs before first paint, so the dark palette is in place before the browser
- * draws the light one. Inline and blocking on purpose — deferring it is the
- * flash.
+ * Runs before first paint, so a saved dark choice is in place before the browser
+ * draws the light one. Inline and blocking on purpose — deferring it is the flash.
+ *
+ * Light is the default: prefers-color-scheme is deliberately not consulted, so a
+ * visitor on a dark OS still lands on the light site. Only an explicit toggle,
+ * saved in localStorage, switches it.
  */
 const THEME_SCRIPT = `
 try {
-  var saved = localStorage.getItem('theme');
-  var dark = saved ? saved === 'dark'
-    : window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.documentElement.dataset.theme =
+    localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
 } catch (e) {}
 `.trim();
 
