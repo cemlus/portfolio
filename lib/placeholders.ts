@@ -50,12 +50,6 @@ export const placeholders: Placeholder[] = [
     done: false,
   },
   {
-    id: 'screenshots',
-    what: 'The polaroids are placeholder SVGs, not real screenshots of anything.',
-    where: 'public/shots/ — replace, then repoint `shots` in lib/entries.ts',
-    done: false,
-  },
-  {
     id: 'blog-gridnode',
     what: 'The GridNode post was reconstructed from the entry data. Verify it against what actually happened.',
     where: 'content/blog/the-fastest-node-was-the-flakiest.md',

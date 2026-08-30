@@ -1,34 +1,37 @@
-import { profile, toolset } from '@/lib/entries';
+import Link from 'next/link';
+import { profile } from '@/lib/entries';
 
-const ELSEWHERE = [
+const REACH = [
   { label: 'Email', href: `mailto:${profile.email}` },
   { label: 'GitHub', href: profile.github },
   { label: 'LinkedIn', href: profile.linkedin },
   { label: 'LeetCode', href: profile.leetcode },
-  { label: 'Resume', href: profile.resume },
+  { label: 'Résumé', href: profile.resume },
 ];
 
 export default function Footer() {
   return (
-    <footer className="close g2 reveal">
-      <div className="gutter">
-        <b>End</b>
-        {profile.role}
-        <br />
-        {profile.location}
-        <span className="an">↳ Happy to walk through any of it in detail.</span>
-      </div>
-      <div className="main">
-        <p className="proof">
-          <span>Reach me</span>
-          {ELSEWHERE.map((link) => (
-            <a key={link.label} href={link.href} rel="noreferrer">
-              {link.label} ↗
-            </a>
-          ))}
-        </p>
-        <p className="stack">{toolset}</p>
-      </div>
+    <footer className="close reveal">
+      <h2>Happy to walk through any of it, including the parts that didn&rsquo;t work.</h2>
+
+      <p className="closesay">
+        I&rsquo;m looking for a 2026 SWE internship in backend or infrastructure. The
+        longer write-ups live in <Link href="/blog">the writing</Link>.
+      </p>
+
+      <p className="reach">
+        {REACH.map((link) => (
+          <a key={link.label} href={link.href} rel="noreferrer">
+            {link.label}
+          </a>
+        ))}
+      </p>
+
+      <p className="sign">
+        <span>{profile.role}</span>
+        <span>{profile.location}</span>
+        <span>Last entry — June 2026</span>
+      </p>
     </footer>
   );
 }

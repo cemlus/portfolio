@@ -14,12 +14,11 @@
   --plot-cool: rgba(44, 110, 73, 0.1);
   --line-warm: #b9503f;
   --line-cool: #2c6e49;
-  --polaroid: #fbfaf6;
-  --polaroid-edge: rgba(24, 33, 29, 0.13);
-  /* The frame is near-white in BOTH themes, so its ink must not follow --pen
-     into the light blue of the dark palette. Deliberately never overridden. */
-  --polaroid-ink: #2a5490;
-  --tape: rgba(185, 80, 63, 0.14);
+  /* the one high-contrast block on the page */
+  --band-bg: #18211d;
+  --band-fg: #f4f6f3;
+  --band-dim: rgba(244, 246, 243, 0.62);
+  --band-edge: #18211d;
   color-scheme: light;
 }
 
@@ -37,9 +36,12 @@
   --plot-cool: rgba(99, 189, 142, 0.13);
   --line-warm: #e0785f;
   --line-cool: #63bd8e;
-  --polaroid: #e9e6df;
-  --polaroid-edge: rgba(0, 0, 0, 0.4);
-  --tape: rgba(224, 120, 95, 0.22);
+  /* inverting to a light block glares against the dark paper — raise a panel
+     instead and keep the text at its normal colour */
+  --band-bg: #1c2325;
+  --band-fg: #dde5e0;
+  --band-dim: #7d8a85;
+  --band-edge: #2b3436;
   color-scheme: dark;
 }
 
@@ -98,7 +100,7 @@ input:focus-visible {
 }
 
 .sheet {
-  max-width: 60rem;
+  max-width: 62rem;
   margin: 0 auto;
   background: var(--sheet);
   border-left: 1px solid var(--ruled);
@@ -180,35 +182,6 @@ input:focus-visible {
   font-style: italic;
 }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--pencil);
-  line-height: 15.5px;
-  height: 62px;
-  padding: 0;
-}
-.topbar nav {
-  display: flex;
-  gap: 1.2rem;
-}
-.topbar nav a {
-  color: var(--pencil);
-  border-bottom: 1px dashed var(--ruled);
-  padding: 0;
-}
-.topbar nav a:hover,
-.topbar nav a[data-active='true'] {
-  color: var(--margin);
-  border-bottom-color: var(--margin);
-}
-
 /* theme toggle, styled as a margin note */
 .toggle {
   background: none;
@@ -229,28 +202,152 @@ input:focus-visible {
   border-bottom-color: var(--margin);
 }
 
+/* ---------- sticky top strip ---------- */
+
+.strip {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--ruled);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.stripin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 46px;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+}
+.strip .who {
+  color: var(--ink);
+}
+.strip nav {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+}
+.strip nav a {
+  color: var(--pencil);
+  border-bottom: 1px solid transparent;
+}
+.strip nav a:hover,
+.strip nav a[data-active='true'] {
+  color: var(--margin);
+  border-bottom-color: var(--margin);
+}
+
+/* ---------- cover ---------- */
+
+.cover {
+  padding: 3.4rem 0 2.7rem;
+}
+.eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pencil);
+}
+.cover h1 {
+  margin-top: 1.1rem;
+  font-weight: 500;
+  font-size: clamp(2.9rem, 9.4vw, 5.2rem);
+  line-height: 0.96;
+  letter-spacing: -0.032em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lead {
+  max-width: 34rem;
+  margin-top: 1.3rem;
+  font-size: clamp(1.16rem, 2.5vw, 1.4rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.lead em {
+  font-style: italic;
+  color: var(--margin);
+}
+
+.band {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem 1.4rem;
+  background: var(--band-bg);
+  color: var(--band-fg);
+  border: 1px solid var(--band-edge);
+}
+.bandtag {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--band-dim);
+}
+.bandgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.2rem;
+  margin-top: 0.9rem;
+}
+.bv {
+  font-size: clamp(2rem, 5vw, 2.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.bk {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.bs {
+  margin-top: 0.15rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  opacity: 0.55;
+}
+
+.coverlinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin-top: 1.7rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+}
+
 /* ---------- index search ---------- */
 
 .find {
-  padding: 31px 0 30px;
+  border-top: 2px solid var(--margin);
   border-bottom: 1px solid var(--ruled);
+  padding: 1.35rem 0 1.25rem;
 }
-.find .l {
+.findfoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.2rem;
+  margin-top: 0.8rem;
+}
+.count {
+  margin-left: auto;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--margin);
-  line-height: 15.5px;
-  padding-top: 0;
+  color: var(--pencil);
 }
-.find .l span {
-  display: block;
-  color: var(--pen);
-  text-transform: none;
-  letter-spacing: 0.02em;
-  margin-top: 0;
-}
+
 .ln {
   display: flex;
   align-items: baseline;
@@ -320,9 +417,9 @@ input:focus-visible {
 /* ---------- entries ---------- */
 
 .entry {
-  padding: 31px 0 30px;
+  padding: 2.15rem 0;
   border-bottom: 1px solid var(--ruled);
-  scroll-margin-top: 31px;
+  scroll-margin-top: 3.5rem;
 }
 .gutter {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -331,23 +428,51 @@ input:focus-visible {
   letter-spacing: 0.04em;
   color: var(--pencil);
 }
+/* the entries use .num/.nm now, but the blog gutters still label with <b> */
 .gutter b {
   display: block;
+  margin-bottom: 0.3rem;
   color: var(--margin);
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 0;
+}
+
+.gutter .num {
+  display: block;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--margin);
+}
+.gutter .nm {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.gutter .mt {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 11px;
+  color: var(--pencil);
 }
 .gutter .an {
   display: block;
+  margin-top: 1.1rem;
+  padding-left: 0.8rem;
+  /* marginal in both layouts, not just on mobile */
+  border-left: 2px solid color-mix(in srgb, var(--pen) 45%, transparent);
   color: var(--pen);
-  margin-top: 15.5px;
   line-height: 15.5px;
 }
+
 .main {
   min-width: 0;
-  max-width: 38rem;
+  max-width: 37rem;
 }
 .main h2 {
   text-wrap: balance;
@@ -517,27 +642,42 @@ svg.plot {
   line-height: 15.5px;
 }
 
+/* one footer row per entry: links left, stack right */
+.efoot {
+  display: flex;
+  /* nowrap on purpose: with wrap, the row breaks on the stack's content width
+     before min-width:0 ever gets to shrink it, and the stack lands on its own
+     line right-aligned, which reads as a mistake */
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--ruled);
+}
 .proof {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11.5px;
-  line-height: 15.5px;
-  margin-top: 14.5px;
   display: flex;
   flex-wrap: wrap;
   gap: 0.1rem 1.2rem;
-  align-items: baseline;
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 15.5px;
 }
-.proof span {
-  color: var(--pencil);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 10px;
+.efoot .stack {
+  /* shrink rather than wrap onto its own line: without min-width:0 the flex
+     base size is the full stack string and the row always breaks */
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 24rem;
+  margin: 0;
+  text-align: right;
+  font-size: 10.5px;
 }
-
-/* .proof's links are flex items, so each one's 1px underline adds a pixel to the
-   row. Take it back off the next block rather than let it drift the whole page. */
-.proof + .stack {
-  margin-top: 14.5px;
+.efoot .proof {
+  /* the links keep their width; the stack is what gives */
+  flex: 0 0 auto;
 }
 
 .stack {
@@ -547,6 +687,30 @@ svg.plot {
   line-height: 15.5px;
   margin-top: 15.5px;
   letter-spacing: 0.02em;
+}
+
+/* screenshots, when there are any */
+.figs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.4rem;
+}
+.figs figure {
+  margin: 0;
+}
+.figs img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ruled);
+}
+.figs figcaption {
+  margin-top: 0.45rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--pencil);
 }
 
 /* ---------- record table ---------- */
@@ -600,8 +764,42 @@ svg.plot {
   font-weight: 500;
 }
 .close {
-  padding: 44.5px 0 0;
+  padding: 2.6rem 0 0;
   border-top: 2px solid var(--margin);
+}
+.close h2 {
+  max-width: 30rem;
+  font-weight: 500;
+  font-size: clamp(1.7rem, 4.4vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.closesay {
+  max-width: 34rem;
+  margin-top: 1rem;
+}
+.reach {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin-top: 1.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+}
+.sign {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.6rem;
+  margin-top: 2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--ruled);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pencil);
 }
 
 /* ---------- blog ---------- */
@@ -724,200 +922,16 @@ svg.plot {
   .head h1 {
     font-size: 1.85rem;
   }
-  .find .l span {
-    display: inline;
-    margin-left: 0.6rem;
+  .strip .who {
+    display: none;
   }
-}
-
-/* ---------- polaroids ---------- */
-
-/* The block adds 31 + 217 + 31 = 279px, an exact 9 × 31, so everything below it
-   keeps the relationship to the ruled lines it had before the photos arrived.
-   Margins collapse with the siblings above and below, which is why they are a
-   flat 31px rather than the rem values used elsewhere. */
-.tape {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 31px 2.1rem;
-  margin: 31px 0;
-}
-
-.pol {
-  position: relative;
-  flex: 0 0 auto;
-  display: block;
-  width: 240px;
-  height: 217px; /* 12 top pad + 162 photo + 43 caption band */
-  padding: 12px 12px 0;
-  background: var(--polaroid);
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  /* A contact shadow tight to the edge, then two softer layers. Without the
-     tight one the photo hovers instead of resting on the paper. */
-  box-shadow:
-    0 1px 1px rgba(24, 33, 29, 0.22),
-    0 3px 6px rgba(24, 33, 29, 0.1),
-    0 10px 22px rgba(24, 33, 29, 0.07);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-/* Deterministic angles. Math.random() here would differ between the server and
-   client renders and desync hydration. */
-.pol:nth-child(odd) {
-  transform: rotate(-1.8deg);
-}
-.pol:nth-child(even) {
-  transform: rotate(1.4deg);
-}
-.pol:nth-child(3n) {
-  transform: rotate(-0.7deg);
-}
-.pol:hover,
-.pol:focus-visible {
-  transform: rotate(0deg) translateY(-4px);
-  box-shadow:
-    0 2px 2px rgba(24, 33, 29, 0.2),
-    0 8px 14px rgba(24, 33, 29, 0.13),
-    0 22px 40px rgba(24, 33, 29, 0.12);
-}
-.pol:focus-visible {
-  outline: 2px solid var(--pen);
-  outline-offset: 3px;
-}
-
-/* the tape — torn ends, a little sheen, and a different angle on each photo so
-   it reads as applied by hand rather than drawn by a stylesheet */
-.pol::before {
-  content: '';
-  position: absolute;
-  top: -9px;
-  width: 78px;
-  height: 23px;
-  background:
-    linear-gradient(
-      104deg,
-      rgba(255, 255, 255, 0.3) 0%,
-      rgba(255, 255, 255, 0.04) 38%,
-      rgba(255, 255, 255, 0.26) 72%,
-      rgba(255, 255, 255, 0.06) 100%
-    ),
-    var(--tape);
-  /* uneven edges: torn, not cut */
-  clip-path: polygon(4% 0%, 96% 3%, 100% 97%, 1% 100%);
-  box-shadow: 0 1px 2px rgba(24, 33, 29, 0.14);
-  pointer-events: none;
-}
-.pol:nth-child(odd)::before {
-  left: 16%;
-  transform: rotate(-8deg);
-}
-.pol:nth-child(even)::before {
-  left: auto;
-  right: 12%;
-  transform: rotate(6.5deg);
-}
-.pol:nth-child(3n)::before {
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%) rotate(-2.5deg);
-}
-
-/* cover, not contain: screenshots arrive at any dimension, and the frame has to
-   stay a fixed height or the ruled rhythm breaks. The dialog shows the whole
-   image; Shot.focus moves the crop when the centre is the wrong place. */
-.pol .pic {
-  display: block;
-  width: 216px;
-  height: 162px;
-  overflow: hidden;
-  background: var(--ruled);
-}
-.pol .pic img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-[data-theme='dark'] .pol .pic img {
-  filter: brightness(0.88);
-}
-
-.pol .cap {
-  /* Clamped rather than centred: a long caption must not spill out of a frame
-     whose height is load-bearing for the ruled rhythm. */
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-  height: 43px;
-  padding-top: 9px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10.5px;
-  line-height: 1.4;
-  letter-spacing: 0.02em;
-  color: var(--polaroid-ink);
-}
-
-/* ---------- lightbox ---------- */
-
-dialog.lb {
-  /* The `* { margin: 0 }` reset at the top of this file beats the UA stylesheet's
-     `dialog { margin: auto }`, which is what centres a modal. Put it back. */
-  margin: auto;
-  max-width: min(92vw, 1100px);
-  max-height: 92vh;
-  padding: 0;
-  border: none;
-  background: transparent;
-  overflow: visible;
-}
-dialog.lb::backdrop {
-  background: rgba(10, 14, 12, 0.74);
-}
-dialog.lb figure {
-  margin: 0;
-  padding: 14px;
-  background: var(--polaroid);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-}
-dialog.lb img {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: calc(92vh - 96px);
-  object-fit: contain;
-}
-dialog.lb figcaption {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.2rem;
-  margin-top: 10px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11.5px;
-  color: var(--polaroid-ink);
-}
-dialog.lb figcaption button {
-  flex: 0 0 auto;
-  background: none;
-  border: none;
-  border-bottom: 1px dashed currentColor;
-  padding: 0.1rem 0;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  color: var(--polaroid-ink);
-  cursor: pointer;
-}
-
-@media (max-width: 760px) {
-  .tape {
-    /* The row gap stays 31px even here: stacked polaroids add 217 + 31 = 248,
-       another exact multiple, so wrapping never knocks the page off the rules. */
-    gap: 31px 1.4rem;
+  .efoot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .efoot .stack {
+    max-width: none;
+    text-align: left;
   }
 }
 

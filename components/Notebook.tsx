@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { entries, record, toolset, type Entry } from '@/lib/entries';
 import LatencyPlot from './LatencyPlot';
-import Polaroids from './Polaroids';
+import Figures from './Figures';
 
 const CHIPS = [
   { label: 'latency', q: 'latency' },
@@ -40,7 +40,7 @@ function haystack(entry: Entry) {
     ...(entry.body ?? []),
     ...(entry.attempts ?? []).flatMap((a) => [a.claim, a.note]),
     ...(entry.metrics ?? []).flatMap((m) => [m.k, m.v, m.s ?? '']),
-    ...(entry.shots ?? []).flatMap((s) => [s.caption, s.alt]),
+    ...(entry.figures ?? []).flatMap((f) => [f.caption, f.alt]),
   ]
     .join(' ')
     .toLowerCase();
@@ -80,33 +80,25 @@ export default function Notebook() {
 
   return (
     <>
-      <div className="find g2 reveal">
-        <div className="l">
-          Index
-          <span>
-            {q
-              ? `${matches.length} of ${entries.length} matching`
-              : `${entries.length} entries`}
+      <div className="find reveal">
+        <div className="ln">
+          <span className="car" aria-hidden="true">
+            ⌕
+          </span>
+          <input
+            ref={inputRef}
+            type="search"
+            autoComplete="off"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="search the notes — latency, gvisor, idempotency…"
+            aria-label="Search these notes"
+          />
+          <span className="k" aria-hidden="true">
+            press /
           </span>
         </div>
-        <div>
-          <div className="ln">
-            <span className="car" aria-hidden="true">
-              ⌕
-            </span>
-            <input
-              ref={inputRef}
-              type="search"
-              autoComplete="off"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="latency, concurrency, gvisor, idempotency…"
-              aria-label="Search these notes"
-            />
-            <span className="k" aria-hidden="true">
-              press /
-            </span>
-          </div>
+        <div className="findfoot">
           <div className="chips">
             {CHIPS.map((chip) => (
               <button
@@ -122,6 +114,9 @@ export default function Notebook() {
               </button>
             ))}
           </div>
+          <p className="count">
+            {q ? `${matches.length} of ${entries.length} matching` : `${entries.length} entries`}
+          </p>
         </div>
       </div>
 
@@ -133,17 +128,21 @@ export default function Notebook() {
           data-delay={Math.min(i, 3) * 60}
         >
           <div className="gutter">
-            <b>{entry.label}</b>
-            {entry.name}
-            {entry.meta.map((line) => (
-              <Fragment key={line}>
-                <br />
-                {line}
-              </Fragment>
-            ))}
-            {entry.annotation ? (
-              <span className="an">↳ {entry.annotation}</span>
+            <span className="num" aria-hidden="true">
+              {entry.numeral}
+            </span>
+            <span className="nm">{entry.name}</span>
+            {entry.meta.length > 0 ? (
+              <span className="mt">
+                {entry.meta.map((line) => (
+                  <Fragment key={line}>
+                    {line}
+                    <br />
+                  </Fragment>
+                ))}
+              </span>
             ) : null}
+            {entry.annotation ? <span className="an">{entry.annotation}</span> : null}
           </div>
 
           <div className="main" style={entry.id === 'record' ? { maxWidth: '40rem' } : undefined}>
@@ -188,7 +187,7 @@ export default function Notebook() {
                   </ul>
                 ) : null}
 
-                {entry.shots ? <Polaroids shots={entry.shots} /> : null}
+                <Figures figures={entry.figures} />
 
                 {entry.plot ? <LatencyPlot /> : null}
 
@@ -208,18 +207,18 @@ export default function Notebook() {
                   <p key={para.slice(0, 32)}>{para}</p>
                 ))}
 
-                {entry.links ? (
-                  <p className="proof">
-                    <span>Check it</span>
-                    {entry.links.map((l) => (
-                      <a key={l.label} href={l.href} rel="noreferrer">
-                        {l.label} ↗
-                      </a>
-                    ))}
-                  </p>
+                {entry.links || entry.stack ? (
+                  <div className="efoot">
+                    <p className="proof">
+                      {entry.links?.map((l) => (
+                        <a key={l.label} href={l.href} rel="noreferrer">
+                          {l.label} ↗
+                        </a>
+                      ))}
+                    </p>
+                    {entry.stack ? <p className="stack">{entry.stack}</p> : null}
+                  </div>
                 ) : null}
-
-                {entry.stack ? <p className="stack">{entry.stack}</p> : null}
               </>
             )}
           </div>

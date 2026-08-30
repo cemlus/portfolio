@@ -49,7 +49,6 @@ const detected = {
   },
   'site-url': () => scan('app/layout.tsx', /SITE\s*=\s*'https:\/\/example\.com'/),
   'method-line': () => scan('components/LatencyPlot.tsx', /t3\.micro|Atlas M0/),
-  screenshots: () => scan('lib/entries.ts', /\/shots\/placeholder-/),
 };
 
 const open = [];

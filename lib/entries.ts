@@ -11,23 +11,17 @@ export type Attempt = {
 
 export type ProofLink = { label: string; href: string };
 
-export type Shot = {
-  /** file under public/shots/ */
+export type Figure = {
+  /** file under public/ */
   src: string;
-  /** what a screen reader hears: describe the content, not "a screenshot of X" */
   alt: string;
-  /** the caption under the frame, in the margin-note voice */
   caption: string;
-  /** natural pixel size, so the browser reserves space and the page never reflows */
-  w: number;
-  h: number;
-  /** object-position, for when the default centre crop cuts the important part */
-  focus?: string;
 };
 
 export type Entry = {
   id: string;
-  label: string;
+  /** serif numeral at the top of the gutter; '—' for the record */
+  numeral: string;
   name: string;
   meta: string[];
   annotation?: string;
@@ -37,7 +31,7 @@ export type Entry = {
   verdict: string;
   attempts?: Attempt[];
   plot?: boolean;
-  shots?: Shot[];
+  figures?: Figure[];
   metrics?: Metric[];
   body?: string[];
   links?: ProofLink[];
@@ -49,7 +43,7 @@ export type Entry = {
 export const entries: Entry[] = [
   {
     id: 'gridnode',
-    label: 'Entry 01',
+    numeral: '01',
     name: 'GridNode',
     meta: ['Empty repo → deployed', '14 days'],
     annotation: 'Assumed nodes would mostly stay up. They mostly don’t.',
@@ -74,22 +68,7 @@ export const entries: Entry[] = [
         note: 'reputation costs an unreliable machine its next job.',
       },
     ],
-    shots: [
-      {
-        src: '/shots/placeholder-gridnode-ui.svg',
-        alt: 'The GridNode scheduler view, with jobs distributed across the node pool.',
-        caption: 'Jobs landing on the pool',
-        w: 800,
-        h: 600,
-      },
-      {
-        src: '/shots/placeholder-gridnode-grafana.svg',
-        alt: 'A Grafana dashboard tracking event-loop lag and connection-pool saturation.',
-        caption: 'Grafana — lag and pool saturation',
-        w: 800,
-        h: 600,
-      },
-    ],
+    figures: [],
     metrics: [
       { k: 'Repo → deployed', v: '14 days', s: 'including infra' },
       { k: 'Static CI secrets', v: '0', s: 'OIDC only' },
@@ -111,7 +90,7 @@ export const entries: Entry[] = [
   },
   {
     id: 'hostelbite',
-    label: 'Entry 02',
+    numeral: '02',
     name: 'HostelBite',
     meta: ['Live · daily use', 'Node · Mongo'],
     annotation: 'The obvious index was the wrong one. Field order decides everything.',
@@ -135,22 +114,7 @@ export const entries: Entry[] = [
         note: 'IXSCAN, and the cliff disappeared.',
       },
     ],
-    shots: [
-      {
-        src: '/shots/placeholder-hostelbite-ui.svg',
-        alt: 'The HostelBite checkout screen as a student sees it.',
-        caption: 'Checkout, the thirteen-second one',
-        w: 800,
-        h: 600,
-      },
-      {
-        src: '/shots/placeholder-hostelbite-explain.svg',
-        alt: 'MongoDB explain() output showing an IXSCAN stage where a COLLSCAN used to be.',
-        caption: 'explain() — IXSCAN, at last',
-        w: 800,
-        h: 600,
-      },
-    ],
+    figures: [],
     plot: true,
     metrics: [
       { k: 'Peak latency', v: '2.62s', s: 'from 13.08s' },
@@ -171,7 +135,7 @@ export const entries: Entry[] = [
   },
   {
     id: 'cosmicattire',
-    label: 'Entry 03',
+    numeral: '03',
     name: 'CosmicAttire',
     meta: ['Apr – Aug 2026', 'Sole backend owner'],
     annotation: 'Treating the network as reliable was the bug. Venue wi-fi is a partition generator.',
@@ -193,13 +157,14 @@ export const entries: Entry[] = [
     body: [
       'Verification degrades through three layers: server check, LRU edge cache, then batch reconciliation once the link returns. Payloads are AES-256-GCM with MAC-based device authentication, over indexed PostgreSQL schemas for hardware telemetry and sync state.',
     ],
+    figures: [],
     stack: 'express · postgresql · supabase · esp32 · aes-256-gcm',
     keywords:
       'cosmicattire iot esp32 nfc payments idempotency exactly once partition offline lru cache supabase postgres aes encryption security startup backend owner databases',
   },
   {
     id: 'goodmeetings',
-    label: 'Entry 04',
+    numeral: '04',
     name: 'Goodmeetings.ai',
     meta: ['Jul – Aug 2025', 'Intern'],
     date: '2025-08',
@@ -208,13 +173,14 @@ export const entries: Entry[] = [
     body: [
       'Speech to text, LLM, text to speech. Most of the work was budgeting latency across the three stages, and scoping open-ended requirements with product managers into something that could actually ship.',
     ],
+    figures: [],
     stack: 'python · llm pipelines · latency tuning',
     keywords:
       'goodmeetings intern voice bot stt llm tts latency pipeline product natural language dashboards',
   },
   {
     id: 'record',
-    label: 'Log',
+    numeral: '—',
     name: 'Record',
     meta: [],
     date: '2023-09',
@@ -223,6 +189,13 @@ export const entries: Entry[] = [
     keywords:
       'thapar education btech cse cgpa leetcode c++ dsa algorithms backslash society general secretary hackathon bis roles record languages tools',
   },
+];
+
+/** The three numbers in the cover band. Kept here, not in the component. */
+export const headline = [
+  { v: '2.62s', k: 'Peak latency', s: 'down from 13.08s' },
+  { v: '0.00%', k: 'Error rate', s: 'down from 24.98%' },
+  { v: '+27%', k: 'Throughput', s: 'same hardware' },
 ];
 
 export const record = [

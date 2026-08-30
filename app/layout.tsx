@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Footer from '@/components/Footer';
+import TopStrip from '@/components/TopStrip';
 import Reveal from '@/components/Reveal';
-import DevNotice from '@/components/DevNotice';
 import './globals.css';
 
 /** Your real domain. Every OG and canonical URL is built from this. */
@@ -68,12 +68,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </noscript>
       </head>
       <body>
+        <TopStrip />
         <div className="sheet">
           {children}
           <Footer />
         </div>
         <Reveal />
-        <DevNotice />
       </body>
     </html>
   );

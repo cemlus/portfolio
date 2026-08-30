@@ -51,13 +51,13 @@ order on the page. Fields:
 
 | Field | Notes |
 | --- | --- |
-| `label` | Gutter heading — `Entry 05` etc. |
+| `numeral` | Serif numeral at the top of the gutter — `05`, or `—`. |
 | `annotation` | The blue margin note. Optional, but it's the best part. |
 | `title` | The problem, as a headline. |
 | `verdict` | The one-line answer. `~~13.08s~~` renders struck through. |
 | `attempts` | Hypotheses. `held: false` renders struck through with a ✗. |
 | `plot` | Set true to render the latency chart (currently HostelBite only). |
-| `shots` | Screenshots, rendered as polaroids taped to the page. See below. |
+| `figures` | Screenshots, rendered as a plain grid. Omit or leave `[]` for none. |
 | `metrics` | The measurement strip. |
 | `links` | Proof links — repo, live site, the k6 script itself. |
 | `keywords` | Extra search terms not visible in the copy. |
@@ -67,32 +67,27 @@ the `caption` and `alt` of every shot.
 
 ## Adding a screenshot
 
-Drop the file in `public/shots/` and add an entry to that entry's `shots` array:
+Drop the file in `public/` and add an entry to that entry's `figures` array:
 
 ```ts
-shots: [
+figures: [
   {
-    src: '/shots/hostelbite-explain.png',
+    src: '/hostelbite-explain.png',
     alt: 'MongoDB explain() output showing an IXSCAN stage where a COLLSCAN used to be.',
     caption: 'explain() — IXSCAN, at last',
-    w: 1440,
-    h: 1080,
   },
 ],
 ```
 
-`w` and `h` are the file's real pixel dimensions; the browser uses them to
-reserve space so the page never reflows as images load. The frame is a fixed
-216×162 and crops with `object-fit: cover` — clicking opens the whole image, so
-a crop only affects the thumbnail. Set `focus` (an `object-position`, e.g.
-`'left top'`) when centring cuts the part that matters.
+An empty or absent array renders nothing at all, so entries without screenshots
+look finished rather than unfinished. Figures lay out in an auto-fit grid at
+`minmax(15rem, 1fr)` and scale to the column width.
 
-**Capturing one.** Crop to the content, not the whole desktop — a full 4K screen
-scaled into a 216px frame is unreadable. Capture at roughly 2× the display size
-(around 1440×1080) so it stays sharp on a retina screen. PNG for anything
-text-heavy, so terminals and query plans stay crisp; WebP or JPEG for
-photographs. Keep each file under ~200KB; the build warns above 400KB, because a
-static export serves every byte uncompressed.
+**Capturing one.** Crop to the content, not the whole desktop. Capture at
+roughly 2× the display width so it stays sharp on a retina screen. PNG for
+anything text-heavy, so terminals and query plans stay crisp; WebP or JPEG for
+photographs. Keep each file under ~200KB — a static export serves every byte
+uncompressed.
 
 **Redact before you capture.** A Grafana panel or a terminal will happily include
 hostnames, internal IPs, connection strings, bearer tokens and real user data.
