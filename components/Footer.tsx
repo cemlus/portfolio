@@ -30,7 +30,7 @@ export default function Footer() {
       <p className="sign">
         <span>{profile.role}</span>
         <span>{profile.location}</span>
-        <span>Last entry — June 2026</span>
+        <span>Last entry — August 2026</span>
       </p>
     </footer>
   );

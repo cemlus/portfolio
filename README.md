@@ -142,6 +142,11 @@ flag, so a forgotten checkbox can't ship a guessed URL. Override with
 6. **Method line** under the chart states t3.micro / Atlas M0. Correct it to
    whatever you actually ran on.
 
+## Things that go stale
+
+The closing signature in `components/Footer.tsx` ends with a hand-written
+`Last entry — August 2026`. Nothing derives it, so bump it when you add an entry.
+
 ## Deploying
 
 **Vercel** (what this is set up for) — import the repo, accept the defaults.

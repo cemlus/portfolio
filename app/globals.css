@@ -441,6 +441,19 @@ input:focus-visible {
   text-transform: uppercase;
 }
 
+/* the one thing that separates a job from a weekend build, at a glance */
+.gutter .kind {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pencil);
+}
+.gutter .kind[data-kind='role'] {
+  color: var(--margin);
+}
+
 .gutter .num {
   display: block;
   font-family: var(--font-serif), Georgia, serif;
@@ -928,6 +941,11 @@ svg.plot {
     align-items: baseline;
   }
   .gutter b {
+    margin-bottom: 0;
+  }
+  /* the strip is baseline-aligned; give the tag its own row above the numeral */
+  .gutter .kind {
+    flex-basis: 100%;
     margin-bottom: 0;
   }
   .gutter .an {

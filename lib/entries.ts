@@ -20,10 +20,12 @@ export type Figure = {
 
 export type Entry = {
   id: string;
-  /** serif numeral at the top of the gutter; '—' for the record */
+  /** serif numeral at the top of the gutter; '—' for the Experience ledger */
   numeral: string;
   name: string;
   meta: string[];
+  /** roles are jobs; projects are things I built on my own time. Absent on the ledger. */
+  kind?: 'role' | 'project';
   annotation?: string;
   date: string;
   title: string;
@@ -45,7 +47,8 @@ export const entries: Entry[] = [
     id: 'gridnode',
     numeral: '01',
     name: 'GridNode',
-    meta: ['Empty repo → deployed', '14 days'],
+    meta: ['Mar 2026', 'Solo build · empty repo → deployed in 14 days'],
+    kind: 'project',
     annotation: 'Assumed nodes would mostly stay up. They mostly don’t.',
     date: '2026-03',
     title: 'Scheduling work onto unreliable machines',
@@ -92,7 +95,8 @@ export const entries: Entry[] = [
     id: 'hostelbite',
     numeral: '02',
     name: 'HostelBite',
-    meta: ['Live · daily use', 'Node · Mongo'],
+    meta: ['May 2026', 'Solo build · live, in daily use'],
+    kind: 'project',
     annotation: 'The obvious index was the wrong one. Field order decides everything.',
     date: '2026-05',
     title: 'Checkout was taking thirteen seconds',
@@ -140,7 +144,8 @@ export const entries: Entry[] = [
     id: 'cosmicattire',
     numeral: '03',
     name: 'CosmicAttire',
-    meta: ['Apr – Aug 2026', 'Backend owner · early-stage startup'],
+    meta: ['Apr – Aug 2026', 'Backend Lead · early-stage startup'],
+    kind: 'role',
     annotation: 'The network is allowed to disappear. The transaction still cannot happen twice.',
     date: '2026-06',
     title: 'Making hardware payments survive bad networks',
@@ -174,6 +179,7 @@ export const entries: Entry[] = [
     numeral: '04',
     name: 'Goodmeetings.ai',
     meta: ['Jul – Aug 2025', 'Product Development Intern'],
+    kind: 'role',
     annotation: 'Voice UX fails when any one stage blocks the entire pipeline.',
     date: '2025-08',
     title: 'Building a real-time voice interface for dashboards',
@@ -201,6 +207,17 @@ export const entries: Entry[] = [
     keywords:
       'goodmeetings voice bot speech to text llm text to speech websockets realtime streaming latency onboarding dashboards',
   },
+  {
+    id: 'experience',
+    numeral: '—',
+    name: 'Experience',
+    meta: [],
+    date: '2026-08',
+    title: 'Experience',
+    verdict: '',
+    keywords:
+      'experience employment work history roles jobs internship intern cosmicattire goodmeetings backend owner product development early stage startup 2025 2026',
+  },
 ];
 
 /** The three numbers in the cover band. Kept here, not in the component. */
@@ -210,21 +227,23 @@ export const headline = [
   { v: '+27%', k: 'Throughput', s: 'same hardware' },
 ];
 
-export const record = [
+/**
+ * The two paid roles, for the ledger entry. Every note here is a compression of
+ * that project entry's own verdict and body — nothing is asserted that the page
+ * does not already say at length.
+ */
+export const roles = [
   {
-    when: '2023 – 2027',
-    what: 'B.Tech Computer Science — Thapar Institute',
-    note: '· 350+ problems in C++. · Finalist, BIS Hackathon.',
+    when: 'Apr - Aug 2026',
+    what: 'Backend Lead — CosmicAttire',
+    note: 'Owned the backend for an IoT-to-server sync flow: buffered NFC events over MQTT from distributed ESP32 readers, idempotency keys for retry-safe processing, three-layer offline-first verification, AES-256-GCM device payloads over indexed PostgreSQL.',
   },
   {
-    when: '2024 – 2025',
-    what: 'General Secretary — Backslash Computing Society',
-    note: '40+ members; events reaching 400+ participants.',
+    when: 'Jul - Aug 2025',
+    what: 'Product Development Intern — Goodmeetings.ai',
+    note: 'Built a voice-driven onboarding bot for configuring and querying dashboards in natural language — WebSockets, Deepgram speech-to-text, LLM generation and per-turn TTS streaming, with a transcript queue serialising conversational turns.',
   },
 ];
-
-export const toolset =
-  'typescript · python · c++ · sql · bash — aws · terraform · docker · github actions · prometheus · grafana · k6 · linux';
 
 export const profile = {
   name: 'Siddhant Bhardwaj',
