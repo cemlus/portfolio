@@ -73,7 +73,7 @@ export const entries: Entry[] = [
     ],
     figures: [],
     metrics: [
-      { k: 'Repo → deployed', v: '17 days', s: 'including infra' },
+      { k: 'Repo → deployed', v: '14 days', s: 'including infra' },
       { k: 'Static CI secrets', v: '0', s: 'OIDC only' },
       { k: 'Alerting on', v: 'lag, pool', s: 'before user impact' },
     ],
