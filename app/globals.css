@@ -14,6 +14,7 @@
   --plot-cool: rgba(44, 110, 73, 0.1);
   --line-warm: #b9503f;
   --line-cool: #2c6e49;
+  --polaroid: #fbfaf6;
   /* the one high-contrast block on the page */
   --band-bg: #18211d;
   --band-fg: #f4f6f3;
@@ -36,6 +37,8 @@
   --plot-cool: rgba(99, 189, 142, 0.13);
   --line-warm: #e0785f;
   --line-cool: #63bd8e;
+  /* a white photo frame would glare here the same way an inverted band does */
+  --polaroid: #1c2325;
   /* inverting to a light block glares against the dark paper — raise a panel
      instead and keep the text at its normal colour */
   --band-bg: #1c2325;
@@ -689,24 +692,41 @@ svg.plot {
   letter-spacing: 0.02em;
 }
 
-/* screenshots, when there are any */
+/* screenshots, when there are any — a polaroid, dialled well down: barely any
+   tilt, a hairline border rather than a dashed one, no tape */
 .figs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: 1.2rem;
+  gap: 1.4rem;
   margin-top: 1.4rem;
+  align-items: start;
 }
 .figs figure {
   margin: 0;
+  padding: 10px 10px 0;
+  background: var(--polaroid);
+  border: 1px solid var(--ruled);
+  box-shadow:
+    0 1px 2px rgba(24, 33, 29, 0.1),
+    0 6px 16px rgba(24, 33, 29, 0.07);
+}
+/* enough to read as a photo set down by hand, not enough to be a gimmick */
+.figs figure:nth-child(odd) {
+  transform: rotate(-0.4deg);
+}
+.figs figure:nth-child(even) {
+  transform: rotate(0.3deg);
 }
 .figs img {
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid var(--ruled);
+}
+[data-theme='dark'] .figs img {
+  filter: brightness(0.9);
 }
 .figs figcaption {
-  margin-top: 0.45rem;
+  padding: 0.55rem 0 0.7rem;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10.5px;
   line-height: 1.55;

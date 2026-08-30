@@ -48,45 +48,45 @@ export const entries: Entry[] = [
     meta: ['Empty repo → deployed', '14 days'],
     annotation: 'Assumed nodes would mostly stay up. They mostly don’t.',
     date: '2026-03',
-    title: 'Scheduling work onto machines that vanish',
+    title: 'Scheduling work onto unreliable machines',
     verdict:
-      '→ Best Fit placement, Trust Score tiebreak, heartbeat requeue. Flaky nodes starve themselves.',
+      '→ Best Fit placement, Trust Score tiebreak, heartbeat-based failure detection and job requeue.',
     attempts: [
       {
         held: false,
         claim: 'Round-robin across available nodes',
-        note: 'fragmented capacity; large jobs starved behind small ones.',
+        note: 'simple distribution, but ignores heterogeneous capacity and job requirements.',
       },
       {
         held: false,
-        claim: 'Rank purely on free capacity',
-        note: 'the fastest node was also the flakiest, and kept winning.',
+        claim: 'Choose the node with the most free capacity',
+        note: 'works for individual placements, but can leave fragmentation and does not account for node reliability.',
       },
       {
         held: true,
-        claim: 'Best Fit, ties broken on completion history',
-        note: 'reputation costs an unreliable machine its next job.',
+        claim: 'Best Fit with Trust Score tie-breaking',
+        note: 'packs work more efficiently while preferring historically reliable machines when capacity is comparable.',
       },
     ],
     figures: [],
     metrics: [
-      { k: 'Repo → deployed', v: '14 days', s: 'including infra' },
+      { k: 'Repo → deployed', v: '17 days', s: 'including infra' },
       { k: 'Static CI secrets', v: '0', s: 'OIDC only' },
       { k: 'Alerting on', v: 'lag, pool', s: 'before user impact' },
     ],
     body: [
-      'Every workload is third-party code, so every workload runs inside a gVisor sandbox — the threat model assumes it’s hostile, not merely careless. Missed heartbeats requeue the job automatically, which turns a node dropping mid-run into a status change rather than an error.',
+      'Built a decentralized compute-sharing platform for ML and video-rendering workloads, with Best Fit scheduling, Trust Score tie-breaking and heartbeat-based machine failure detection.',
+      'Jobs execute inside Docker and gVisor isolation, while Redis/BullMQ handles asynchronous work and email processing. Completed artifacts are transferred through presigned object-storage uploads and execution logs are streamed over Socket.IO.',
       'I owned the deployment layer too: Terraform-provisioned VPC, EC2, RDS and least-privilege IAM, with Prometheus and Grafana watching event-loop lag and connection-pool saturation.',
     ],
     links: [
       { label: 'Source', href: 'https://github.com/cemlus/gridNode' },
       { label: 'Terraform', href: 'https://github.com/cemlus/gridNode/tree/main/infra' },
-      { label: 'Scheduler', href: 'https://github.com/cemlus/gridNode/tree/main/scheduler' },
     ],
     stack:
       'node.js · redis · bullmq · socket.io · postgresql · docker · gvisor · terraform · aws · prometheus',
     keywords:
-      'gridnode distributed scheduling best fit bin packing trust score heartbeat gvisor sandbox security redis bullmq socket.io postgres docker terraform aws iam oidc prometheus grafana infrastructure devops concurrency isolation',
+      'gridnode distributed scheduling best fit bin packing trust score heartbeat gvisor sandbox security redis bullmq socket.io postgres docker terraform aws s3 iam oidc prometheus grafana infrastructure devops concurrency isolation',
   },
   {
     id: 'hostelbite',
@@ -96,38 +96,41 @@ export const entries: Entry[] = [
     annotation: 'The obvious index was the wrong one. Field order decides everything.',
     date: '2026-05',
     title: 'Checkout was taking thirteen seconds',
-    verdict: '→ one compound index, equality-then-range. ~~13.08s~~ 2.62s, errors gone.',
+    verdict: '→ A query-shaped compound index changed the access path: peak latency fell from 13.08s to 2.62s.',
     attempts: [
       {
         held: false,
         claim: 'Index on shopId',
-        note: 'planner still chose COLLSCAN. The filter spans three fields.',
+        note: 'the query still did not have an efficient access path for its full filter.',
       },
       {
         held: false,
-        claim: 'Index each field separately',
-        note: 'Mongo picks one and ignores the rest.',
+        claim: 'Separate indexes on individual fields',
+        note: 'multiple indexes still did not match the query shape efficiently.',
       },
       {
         held: true,
-        claim: 'One compound index, ordered to match the query',
-        note: 'IXSCAN, and the cliff disappeared.',
+        claim: 'One compound index matching the query pattern',
+        note: 'the planner moved to an index-backed execution path and the latency cliff disappeared.',
       },
     ],
     figures: [],
     plot: true,
     metrics: [
       { k: 'Peak latency', v: '2.62s', s: 'from 13.08s' },
-      { k: 'Error rate', v: '0.00%', s: 'from 24.98%' },
+      { k: 'Peak failure rate', v: '0.00%', s: 'from 24.98%' },
       { k: 'Throughput', v: '+27%', s: 'same hardware' },
+      { k: 'Load tested', v: '4,900+', s: 'requests' },
+      { k: 'Concurrent checkouts', v: '30', s: 'zero oversells' },
     ],
     body: [
-      'Same system, quieter bug: two students could both buy the last unit. Inventory now decrements atomically with rollback on partial failure — thirty concurrent checkouts, zero oversells.',
-    ],
+      'Diagnosed a MongoDB query bottleneck responsible for 13.08s peak latency under load. After replacing the ineffective indexing strategy with a query-aligned compound index, peak latency dropped to 2.62s and throughput increased 27%, validated through 4,900+ k6 requests.',
+      'Separately, engineered atomic inventory decrements with MongoDB $inc and rollback handling for failed checkouts, then stress-tested 30 concurrent checkout transactions without race conditions or overselling.',
+      'Implemented JWT authentication and RBAC for Students, Shop Owners and Admins, with Helmet.js, CORS controls, rate limiting and OpenRouter/Gemini-assisted product listing generation.',],
     links: [
-      { label: 'Live', href: 'https://github.com/cemlus/hostel-bite' },
+      { label: 'Live', href: 'https://hostel-bite-kohl.vercel.app' },
       { label: 'Source', href: 'https://github.com/cemlus/hostel-bite' },
-      { label: 'k6 script', href: 'https://github.com/cemlus/hostel-bite/tree/main/loadtest' },
+      { label: 'k6 scripts', href: 'https://github.com/cemlus/hostel-bite/tree/main/load_tests' },
     ],
     stack: 'node.js · express · mongodb · jwt · k6 · helmet.js',
     keywords:
@@ -137,57 +140,66 @@ export const entries: Entry[] = [
     id: 'cosmicattire',
     numeral: '03',
     name: 'CosmicAttire',
-    meta: ['Apr – Aug 2026', 'Sole backend owner'],
-    annotation: 'Treating the network as reliable was the bug. Venue wi-fi is a partition generator.',
+    meta: ['Apr – Aug 2026', 'Backend owner · early-stage startup'],
+    annotation: 'The network is allowed to disappear. The transaction still cannot happen twice.',
     date: '2026-06',
-    title: 'Payments where the network keeps dropping',
-    verdict: '→ buffer on-device, sync with idempotency keys. Exactly-once through a partition.',
+    title: 'Making hardware payments survive bad networks',
+    verdict:
+      '→ Buffer events, attach stable idempotency keys, validate from cache when necessary, and reconcile once connectivity returns.',
     attempts: [
       {
         held: false,
-        claim: 'Retry the tap on failure',
-        note: 'duplicate charges. Retries need identity, not just persistence.',
+        claim: 'Retry failed transactions directly',
+        note: 'a retry can duplicate the same business operation when the original response is lost.',
       },
       {
         held: true,
-        claim: 'Idempotency keys on buffered events',
-        note: 'a resend is recognised, not re-charged.',
+        claim: 'Buffer events and process them idempotently',
+        note: 'the same transaction can be delivered multiple times without being applied multiple times.',
       },
     ],
     body: [
-      'Verification degrades through three layers: server check, LRU edge cache, then batch reconciliation once the link returns. Payloads are AES-256-GCM with MAC-based device authentication, over indexed PostgreSQL schemas for hardware telemetry and sync state.',
+      'Owned backend architecture for an IoT-to-server synchronization flow connecting distributed ESP32 readers to the backend through MQTT, including buffered NFC events, transaction identifiers and retry-safe processing.',
+      'Designed a three-layer offline-first verification pipeline using server validation, LRU caching and batch reconciliation so degraded connectivity did not immediately break verification.',
+      'Protected device payloads with AES-256-GCM and maintained indexed PostgreSQL state for hardware telemetry and synchronization.',
     ],
-    figures: [],
-    stack: 'express · postgresql · supabase · esp32 · aes-256-gcm',
+    links: [],
+    stack:
+      'express · postgresql · supabase · redis · mqtt · esp32 · aes-256-gcm',
     keywords:
-      'cosmicattire iot esp32 nfc payments idempotency exactly once partition offline lru cache supabase postgres aes encryption security startup backend owner databases',
+      'cosmicattire iot esp32 nfc mqtt payments idempotency retries offline first synchronization lru cache postgres redis encryption distributed systems backend security',
   },
   {
     id: 'goodmeetings',
     numeral: '04',
     name: 'Goodmeetings.ai',
-    meta: ['Jul – Aug 2025', 'Intern'],
+    meta: ['Jul – Aug 2025', 'Product Development Intern'],
+    annotation: 'Voice UX fails when any one stage blocks the entire pipeline.',
     date: '2025-08',
-    title: 'Talking to a dashboard',
-    verdict: '→ shipped a voice onboarding bot inside production latency budget.',
+    title: 'Building a real-time voice interface for dashboards',
+    verdict:
+      '→ WebSocket sessions, queued transcript processing, LLM generation and per-turn TTS streaming kept the voice pipeline interactive.',
+    attempts: [
+      {
+        held: false,
+        claim: 'Process every transcript immediately',
+        note: 'overlapping LLM/TTS work can cause responses to race and audio state to leak between turns.',
+      },
+      {
+        held: true,
+        claim: 'Queue final transcripts and process them serially',
+        note: 'one conversational turn completes before the next begins, keeping state and TTS sessions isolated.',
+      },
+    ],
     body: [
-      'Speech to text, LLM, text to speech. Most of the work was budgeting latency across the three stages, and scoping open-ended requirements with product managers into something that could actually ship.',
+      'Built a voice-driven onboarding bot that let customers configure and query dashboards using natural language.',
+      'Implemented the real-time path around WebSockets, Deepgram speech-to-text, LLM response generation and per-turn text-to-speech streaming, with a transcript queue to serialize conversational turns.',
     ],
     figures: [],
-    stack: 'python · llm pipelines · latency tuning',
+    stack:
+      'node.js · websockets · deepgram · llm · tts · aws · nginx',
     keywords:
-      'goodmeetings intern voice bot stt llm tts latency pipeline product natural language dashboards',
-  },
-  {
-    id: 'record',
-    numeral: '—',
-    name: 'Record',
-    meta: [],
-    date: '2023-09',
-    title: 'Record',
-    verdict: '',
-    keywords:
-      'thapar education btech cse cgpa leetcode c++ dsa algorithms backslash society general secretary hackathon bis roles record languages tools',
+      'goodmeetings voice bot speech to text llm text to speech websockets realtime streaming latency onboarding dashboards',
   },
 ];
 
@@ -201,8 +213,8 @@ export const headline = [
 export const record = [
   {
     when: '2023 – 2027',
-    what: 'B.Tech CSE — Thapar Institute',
-    note: 'CGPA 8.35 · Finalist, BIS Hackathon · 340+ problems in C++.',
+    what: 'B.Tech Computer Science — Thapar Institute',
+    note: '· 350+ problems in C++. · Finalist, BIS Hackathon.',
   },
   {
     when: '2024 – 2025',
@@ -212,11 +224,11 @@ export const record = [
 ];
 
 export const toolset =
-  'typescript · javascript · python · c++ · sql · bash — aws · terraform · docker · github actions · prometheus · grafana · k6 · linux';
+  'typescript · python · c++ · sql · bash — aws · terraform · docker · github actions · prometheus · grafana · k6 · linux';
 
 export const profile = {
   name: 'Siddhant Bhardwaj',
-  role: 'Backend engineer',
+  role: 'Software engineer',
   location: 'New Delhi, IN',
   cohort: 'B.Tech CSE ’27',
   email: 'siddhantbhardwaj47@gmail.com',

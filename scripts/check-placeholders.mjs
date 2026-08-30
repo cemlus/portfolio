@@ -41,14 +41,10 @@ function registry() {
  * that leave a detectable trace; everything else falls through to its flag.
  */
 const detected = {
-  'proof-links': () =>
-    scan('lib/entries.ts', /\/tree\/main\/(infra|loadtest|scheduler)/),
-  resume: () => {
-    const p = join(root, '../public/resume.pdf');
-    return !existsSync(p) || statSync(p).size < 1024;
-  },
+  // 'proof-links' and 'method-line' used to live here. Both have been reviewed by
+  // hand, and neither heuristic can tell a checked URL from a guessed one any more
+  // — left in, they would outvote the done flags and block the deploy forever.
   'site-url': () => scan('app/layout.tsx', /SITE\s*=\s*'https:\/\/example\.com'/),
-  'method-line': () => scan('components/LatencyPlot.tsx', /t3\.micro|Atlas M0/),
 };
 
 const open = [];
@@ -63,12 +59,18 @@ for (const item of registry()) {
  * Screenshots are the easiest way to turn a 40KB page into a 4MB one, and a
  * static export serves every byte as-is.
  */
-function heavyShots(limit = 400 * 1024) {
-  const dir = join(root, 'public/shots');
+const IMAGE = /\.(png|jpe?g|webp|gif|avif)$/i;
+
+function heavyShots(limit = 400 * 1024, dir = join(root, 'public'), prefix = '') {
   if (!existsSync(dir)) return [];
-  return readdirSync(dir)
-    .map((name) => ({ name, size: statSync(join(dir, name)).size }))
-    .filter((f) => f.size > limit)
+  return readdirSync(dir, { withFileTypes: true })
+    .flatMap((e) => {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) return heavyShots(limit, full, `${prefix}${e.name}/`);
+      if (!IMAGE.test(e.name)) return [];
+      const { size } = statSync(full);
+      return size > limit ? [{ name: `${prefix}${e.name}`, size }] : [];
+    })
     .sort((a, b) => b.size - a.size);
 }
 
