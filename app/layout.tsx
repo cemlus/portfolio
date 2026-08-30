@@ -6,7 +6,7 @@ import Reveal from '@/components/Reveal';
 import './globals.css';
 
 /** Your real domain. Every OG and canonical URL is built from this. */
-const SITE = 'https://example.com';
+const SITE = 'https://cemlus.xyz';
 
 const DESCRIPTION =
   'The wrong hypothesis, the measurement that killed it, the fix that survived. ' +
