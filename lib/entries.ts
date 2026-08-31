@@ -58,17 +58,20 @@ export const entries: Entry[] = [
       {
         held: false,
         claim: 'Round-robin across available nodes',
-        note: 'simple distribution, but ignores heterogeneous capacity and job requirements.',
+        note:
+          'spreading small jobs evenly leaves every node with a little room and none with enough, so large jobs starve behind them.',
       },
       {
         held: false,
         claim: 'Choose the node with the most free capacity',
-        note: 'works for individual placements, but can leave fragmentation and does not account for node reliability.',
+        note:
+          'the emptiest node is often the one that just dropped a job, so failure is indistinguishable from availability.',
       },
       {
         held: true,
         claim: 'Best Fit with Trust Score tie-breaking',
-        note: 'packs work more efficiently while preferring historically reliable machines when capacity is comparable.',
+        note:
+          'the tightest fit keeps large contiguous blocks intact, and ties go to completion history, so dropping a job costs a node its next one.',
       },
     ],
     figures: [],
@@ -78,9 +81,8 @@ export const entries: Entry[] = [
       { k: 'Alerting on', v: 'lag, pool', s: 'before user impact' },
     ],
     body: [
-      'Built a decentralized compute-sharing platform for ML and video-rendering workloads, with Best Fit scheduling, Trust Score tie-breaking and heartbeat-based machine failure detection.',
-      'Jobs execute inside Docker and gVisor isolation, while Redis/BullMQ handles asynchronous work and email processing. Completed artifacts are transferred through presigned object-storage uploads and execution logs are streamed over Socket.IO.',
-      'I owned the deployment layer too: Terraform-provisioned VPC, EC2, RDS and least-privilege IAM, with Prometheus and Grafana watching event-loop lag and connection-pool saturation.',
+      'GridNode spreads compute across volunteered machines — laptops and spare boxes that take ML training and video-rendering jobs, then leave. Every job is someone else’s code, so it runs inside Docker under gVisor rather than against the host kernel.',
+      'Redis and BullMQ carry the asynchronous work, finished artifacts move out through presigned object-storage uploads, and execution logs stream over Socket.IO while a job is still running. I owned the deployment layer too: VPC, EC2, RDS and least-privilege IAM, all Terraform-provisioned, with Prometheus and Grafana on top.',
     ],
     links: [
       { label: 'Source', href: 'https://github.com/cemlus/gridNode' },
@@ -105,17 +107,18 @@ export const entries: Entry[] = [
       {
         held: false,
         claim: 'Index on shopId',
-        note: 'the query still did not have an efficient access path for its full filter.',
+        note: 'the planner still chose a collection scan.',
       },
       {
         held: false,
         claim: 'Separate indexes on individual fields',
-        note: 'multiple indexes still did not match the query shape efficiently.',
+        note:
+          'Mongo will not usefully intersect separate indexes for this filter, so the scan stayed.',
       },
       {
         held: true,
         claim: 'One compound index matching the query pattern',
-        note: 'the planner moved to an index-backed execution path and the latency cliff disappeared.',
+        note: 'the planner switched to an IXSCAN and the cliff disappeared.',
       },
     ],
     figures: [],
@@ -128,9 +131,9 @@ export const entries: Entry[] = [
       { k: 'Concurrent checkouts', v: '30', s: 'zero oversells' },
     ],
     body: [
-      'Diagnosed a MongoDB query bottleneck responsible for 13.08s peak latency under load. After replacing the ineffective indexing strategy with a query-aligned compound index, peak latency dropped to 2.62s and throughput increased 27%, validated through 4,900+ k6 requests.',
-      'Separately, engineered atomic inventory decrements with MongoDB $inc and rollback handling for failed checkouts, then stress-tested 30 concurrent checkout transactions without race conditions or overselling.',
-      'Implemented JWT authentication and RBAC for Students, Shop Owners and Admins, with Helmet.js, CORS controls, rate limiting and OpenRouter/Gemini-assisted product listing generation.',],
+      'Underneath the latency problem was a correctness one. Inventory decrements go through MongoDB’s $inc so the decrement itself is atomic, with rollback handling for a checkout that fails partway.',
+      'Access is JWT-based, with separate roles for students, shop owners and admins. Helmet.js, CORS rules and rate limiting sit in front of that, and product listings are drafted with OpenRouter and Gemini.',
+    ],
     links: [
       { label: 'Live', href: 'https://hostel-bite-kohl.vercel.app' },
       { label: 'Source', href: 'https://github.com/cemlus/hostel-bite' },
@@ -155,18 +158,19 @@ export const entries: Entry[] = [
       {
         held: false,
         claim: 'Retry failed transactions directly',
-        note: 'a retry can duplicate the same business operation when the original response is lost.',
+        note:
+          'a lost response is indistinguishable from a failure, so the retry applies the same charge a second time.',
       },
       {
         held: true,
         claim: 'Buffer events and process them idempotently',
-        note: 'the same transaction can be delivered multiple times without being applied multiple times.',
+        note:
+          'the key makes a resend recognisable, so an event can be delivered many times and applied once.',
       },
     ],
     body: [
-      'Owned backend architecture for an IoT-to-server synchronization flow connecting distributed ESP32 readers to the backend through MQTT, including buffered NFC events, transaction identifiers and retry-safe processing.',
-      'Designed a three-layer offline-first verification pipeline using server validation, LRU caching and batch reconciliation so degraded connectivity did not immediately break verification.',
-      'Protected device payloads with AES-256-GCM and maintained indexed PostgreSQL state for hardware telemetry and synchronization.',
+      'The readers are ESP32 units on venue wi-fi, talking to the backend over MQTT. That link is allowed to vanish mid-transaction, and every other decision here follows from taking that seriously rather than treating it as an edge case.',
+      'Verification degrades in layers instead of failing outright — a server check first, an LRU cache at the edge behind it, then batch reconciliation once the link returns. Device payloads are AES-256-GCM, and telemetry and sync state live in indexed PostgreSQL.',
     ],
     links: [],
     stack:
@@ -198,8 +202,7 @@ export const entries: Entry[] = [
       },
     ],
     body: [
-      'Built a voice-driven onboarding bot that let customers configure and query dashboards using natural language.',
-      'Implemented the real-time path around WebSockets, Deepgram speech-to-text, LLM response generation and per-turn text-to-speech streaming, with a transcript queue to serialize conversational turns.',
+      'The bot let customers configure and query their dashboards by talking to them, rather than clicking through setup screens. Speech-to-text ran on Deepgram.',
     ],
     figures: [],
     stack:
@@ -208,15 +211,15 @@ export const entries: Entry[] = [
       'goodmeetings voice bot speech to text llm text to speech websockets realtime streaming latency onboarding dashboards',
   },
   {
-    id: 'experience',
+    id: 'record',
     numeral: '—',
-    name: 'Experience',
+    name: 'Record',
     meta: [],
     date: '2026-08',
-    title: 'Experience',
+    title: 'Record',
     verdict: '',
     keywords:
-      'experience employment work history roles jobs internship intern cosmicattire goodmeetings backend owner product development early stage startup 2025 2026',
+      'record education thapar institute patiala b.tech btech cse computer science 2027 bis hackathon finalist competitive programming 350 problems c++ leetcode backslash computing society general secretary leadership workshops languages tools',
   },
 ];
 
@@ -228,22 +231,26 @@ export const headline = [
 ];
 
 /**
- * The two paid roles, for the ledger entry. Every note here is a compression of
- * that project entry's own verdict and body — nothing is asserted that the page
- * does not already say at length.
+ * Education and society, for the Record entry. CosmicAttire and Goodmeetings are
+ * deliberately absent: they are entries 03 and 04 in full, and listing them again
+ * here was the same work told twice.
  */
-export const roles = [
+export const record = [
   {
-    when: 'Apr - Aug 2026',
-    what: 'Backend Lead — CosmicAttire',
-    note: 'Owned the backend for an IoT-to-server sync flow: buffered NFC events over MQTT from distributed ESP32 readers, idempotency keys for retry-safe processing, three-layer offline-first verification, AES-256-GCM device payloads over indexed PostgreSQL.',
+    when: '2023 – 2027',
+    what: 'B.Tech CSE — Thapar Institute',
+    note: '· Finalist, BIS Hackathon · 350+ problems solved in C++',
   },
   {
-    when: 'Jul - Aug 2025',
-    what: 'Product Development Intern — Goodmeetings.ai',
-    note: 'Built a voice-driven onboarding bot for configuring and querying dashboards in natural language — WebSockets, Deepgram speech-to-text, LLM generation and per-turn TTS streaming, with a transcript queue serialising conversational turns.',
+    when: '2024 – 2025',
+    what: 'General Secretary — Backslash Computing Society',
+    note: '40+ members; hackathons and workshops reaching 400+ participants',
   },
 ];
+
+/** Rendered once, under the Record table. */
+export const toolset =
+  'typescript · python · c++ · sql · bash — aws · terraform · docker · github actions · prometheus · grafana · k6 · linux';
 
 export const profile = {
   name: 'Siddhant Bhardwaj',

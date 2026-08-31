@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { entries, roles, type Entry } from '@/lib/entries';
+import { entries, record, toolset, type Entry } from '@/lib/entries';
 import LatencyPlot from './LatencyPlot';
 import Figures from './Figures';
 
@@ -151,13 +151,13 @@ export default function Notebook() {
             {entry.annotation ? <span className="an">{entry.annotation}</span> : null}
           </div>
 
-          <div className="main" style={entry.id === 'experience' ? { maxWidth: '40rem' } : undefined}>
-            {entry.id === 'experience' ? (
+          <div className="main" style={entry.id === 'record' ? { maxWidth: '40rem' } : undefined}>
+            {entry.id === 'record' ? (
               <>
-                <h2>Experience</h2>
+                <h2>Record</h2>
                 <table className="log">
                   <tbody>
-                    {roles.map((row) => (
+                    {record.map((row) => (
                       <tr key={row.what}>
                         <td className="d">{row.when}</td>
                         <td>
@@ -168,6 +168,7 @@ export default function Notebook() {
                     ))}
                   </tbody>
                 </table>
+                <p className="stack">{toolset}</p>
               </>
             ) : (
               <>
