@@ -13,26 +13,38 @@ const DESCRIPTION =
   'Backend engineering notes by Siddhant Bhardwaj.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
+  metadataBase: new URL('https://portfolio-pied-nine-73.vercel.app'),
+
   title: {
     default: 'Siddhant Bhardwaj — Working notes',
     template: '%s — Working notes',
   },
+
   description: DESCRIPTION,
+
   authors: [{ name: 'Siddhant Bhardwaj' }],
+
   openGraph: {
     type: 'website',
     siteName: 'Working notes',
     title: 'Three systems, and how I got them wrong first.',
     description: DESCRIPTION,
     url: '/',
-    images: [{ url: '../public/og.png', width: 1200, height: 630, alt: 'Working notes — Siddhant Bhardwaj' }],
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Working notes — Siddhant Bhardwaj',
+      },
+    ],
   },
+
   twitter: {
     card: 'summary_large_image',
     title: 'Three systems, and how I got them wrong first.',
     description: DESCRIPTION,
-    images: ['../public/og.png'],
+    images: ['/og.png'],
   },
 };
 
