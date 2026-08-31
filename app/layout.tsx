@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     title: 'Three systems, and how I got them wrong first.',
     description: DESCRIPTION,
     url: '/',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Working notes — Siddhant Bhardwaj' }],
+    images: [{ url: '../public/og.png', width: 1200, height: 630, alt: 'Working notes — Siddhant Bhardwaj' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Three systems, and how I got them wrong first.',
     description: DESCRIPTION,
-    images: ['/og.png'],
+    images: ['../public/og.png'],
   },
 };
 
